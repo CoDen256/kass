@@ -9,7 +9,7 @@ class Test(TestCase):
         s1 = SystemSnapshot([], "md5")
         s2 = SystemSnapshot([], "md5")
         result = compare_snapshots(s1, s2)
-        self.assertEqual([], result)
+        self.assertCountEqual([], result)
 
     def test_compare_snapshots_add_file(self):
         s1 = SystemSnapshot([], "md5")
@@ -18,7 +18,7 @@ class Test(TestCase):
         ], "md5")
 
         result = compare_snapshots(s1, s2)
-        self.assertEqual([
+        self.assertCountEqual([
             SnapshotDiff('add', 'path', 'f', 'object', None, None)
         ], result)
 
@@ -29,7 +29,7 @@ class Test(TestCase):
         ], "md5")
 
         result = compare_snapshots(s1, s2)
-        self.assertEqual([
+        self.assertCountEqual([
             SnapshotDiff('add', 'path', 'd', 'object', None, None)
         ], result)
 
@@ -40,7 +40,7 @@ class Test(TestCase):
         s2 = SystemSnapshot([], "md5")
 
         result = compare_snapshots(s1, s2)
-        self.assertEqual([
+        self.assertCountEqual([
             SnapshotDiff('delete', 'path', 'f', 'object', None, None)
         ], result)
 
@@ -51,7 +51,7 @@ class Test(TestCase):
         s2 = SystemSnapshot([], "md5")
 
         result = compare_snapshots(s1, s2)
-        self.assertEqual([
+        self.assertCountEqual([
             SnapshotDiff('delete', 'path', 'd', 'object', None, None)
         ], result)
 
@@ -61,7 +61,7 @@ class Test(TestCase):
         ], "md5")
 
         result = compare_snapshots(s1, s1)
-        self.assertEqual([], result)
+        self.assertCountEqual([], result)
 
     def test_compare_snapshots_same_dir(self):
         s1 = SystemSnapshot([
@@ -69,4 +69,32 @@ class Test(TestCase):
         ], "md5")
 
         result = compare_snapshots(s1, s1)
-        self.assertEqual([], result)
+        self.assertCountEqual([], result)
+
+    def test_compare_snapshots_remove_file_add_file(self):
+        s1 = SystemSnapshot([
+            FileSnapshot("path", "u", "g", "a", datetime.datetime.max, "md", 0)
+        ], "md5")
+        s2 = SystemSnapshot([
+            FileSnapshot("path2", "u", "g", "a", datetime.datetime.max, "md", 0)
+        ], "md5")
+
+        result = compare_snapshots(s1, s2)
+        self.assertCountEqual([
+            SnapshotDiff('delete', 'path', 'f', 'object', None, None),
+            SnapshotDiff('add', 'path2', 'f', 'object', None, None)
+        ], result)
+
+    def test_compare_snapshots_remove_dir_add_dir(self):
+        s1 = SystemSnapshot([
+            DirSnapshot("path", "u", "g", "a", datetime.datetime.max)
+        ], "md5")
+        s2 = SystemSnapshot([
+            DirSnapshot("path2", "u", "g", "a", datetime.datetime.max)
+        ], "md5")
+
+        result = compare_snapshots(s1, s2)
+        self.assertCountEqual([
+            SnapshotDiff('delete', 'path', 'd', 'object', None, None),
+            SnapshotDiff('add', 'path2', 'd', 'object', None, None)
+        ], result)
