@@ -19,8 +19,7 @@ def compare_snapshots(old: SystemSnapshot, new: SystemSnapshot) -> List[Snapshot
     result = []
     for o, n in grouped_diff.values():
         diff = compare_snapshot(o, n)
-        if diff is None: continue
-        result.append(diff)
+        result += diff[:]
     return result
 
 
@@ -30,32 +29,29 @@ def get_unique_key(snapshot):
     return snapshot.full_path + "/" + get_type(snapshot)
 
 
-def compare_snapshot(old: Snapshot, new: Snapshot) -> SnapshotDiff:
-    if old is None:
-        return SnapshotDiff('add', new.full_path, get_type(new), 'object', None, None)
-
-    if new is None:
-        return SnapshotDiff('delete', old.full_path, get_type(old), 'object', None, None)
+def compare_snapshot(old: Snapshot, new: Snapshot) -> List[SnapshotDiff]:
+    diffs = []
+    if old is None: return [SnapshotDiff('add', new.full_path, get_type(new), 'object', None, None)]
+    if new is None: return [SnapshotDiff('delete', old.full_path, get_type(old), 'object', None, None)]
 
     if new.last_modified != old.last_modified:
-        return SnapshotDiff('modify', new.full_path, get_type(new), 'modified', old.last_modified, new.last_modified)
+        diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'modified', old.last_modified, new.last_modified))
 
     if new.access_mode != old.access_mode:
-        return SnapshotDiff('modify', new.full_path, get_type(new), 'access', old.access_mode, new.access_mode)
+        diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'access', old.access_mode, new.access_mode))
 
     if new.user != old.user:
-        return SnapshotDiff('modify', new.full_path, get_type(new), 'user', old.user, new.user)
+        diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'user', old.user, new.user))
 
     if new.group != old.group:
-        return SnapshotDiff('modify', new.full_path, get_type(new), 'group', old.group, new.group)
+        diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'group', old.group, new.group))
 
     if isinstance(old, FileSnapshot) and isinstance(new, FileSnapshot):
         if new.size != old.size:
-            return SnapshotDiff('modify', new.full_path, get_type(new), 'size', old.size, new.size)
+            diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'size', old.size, new.size))
         if new.message_digest != old.message_digest:
-            return SnapshotDiff('modify', new.full_path, get_type(new), 'hash', old.message_digest, new.message_digest)
-
-    return None
+            diffs.append(SnapshotDiff('modify', new.full_path, get_type(new), 'hash', old.message_digest, new.message_digest))
+    return diffs
 
 
 def get_type(snapshot: Snapshot) -> Type:
