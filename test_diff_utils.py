@@ -98,3 +98,30 @@ class Test(TestCase):
             SnapshotDiff('delete', 'path', 'd', 'object', None, None),
             SnapshotDiff('add', 'path2', 'd', 'object', None, None)
         ], result)
+
+    def test_compare_snapshots_modify_file_size(self):
+        s1 = SystemSnapshot([
+            FileSnapshot("path", "u", "g", "a", datetime.datetime.max, "md", 0)
+        ], "md5")
+        s2 = SystemSnapshot([
+            FileSnapshot("path", "u", "g", "a", datetime.datetime.max, "md", 1)
+        ], "md5")
+
+        result = compare_snapshots(s1, s2)
+        self.assertCountEqual([
+            SnapshotDiff('modify', 'path', 'f', 'size', 0, 1)
+        ], result)
+
+    def test_compare_snapshots_modify_file_size(self):
+        s1 = SystemSnapshot([
+            FileSnapshot("path", "u", "g", "a", datetime.datetime.max, "md", 0)
+        ], "md5")
+        s2 = SystemSnapshot([
+            DirSnapshot("path", "u", "g", "a", datetime.datetime.max)
+        ], "md5")
+
+        result = compare_snapshots(s1, s2)
+        self.assertCountEqual([
+            SnapshotDiff('add', 'path', 'd', 'object', None, None),
+            SnapshotDiff('delete', 'path', 'f', 'object', None, None)
+        ], result)

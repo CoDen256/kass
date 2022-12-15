@@ -16,13 +16,13 @@ class Snapshot:
     last_modified: datetime
 
 
-@dataclass()
+@dataclass(unsafe_hash=True)
 class FileSnapshot(Snapshot):
     message_digest: str
     size: int
 
 
-@dataclass()
+@dataclass(unsafe_hash=True)
 class DirSnapshot(Snapshot):
     pass
 
