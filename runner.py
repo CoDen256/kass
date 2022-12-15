@@ -1,47 +1,7 @@
-from typing import List
-from model import *
-
-
-def load_snapshot(verification_file: str) -> SystemSnapshot:
-    pass
-
-
-def create_file_snapshot(file_path: str, function: HashFunction) -> FileSnapshot:
-    pass
-
-
-def create_dir_snapshot(dir_path: str) -> DirSnapshot:
-    pass
-
-
-def create_system_snapshot(monitored_path: str, function: HashFunction) -> SystemSnapshot:
-    pass
-
-
-def compare_snapshots(s1: SystemSnapshot, s2: SystemSnapshot) -> List[SnapshotDiff]:
-    pass
-
-
-def create_init_report(monitored_path: str, verification_path: str, time_millis: int,
-                       snapshot: SystemSnapshot) -> InitializationReport:
-    pass
-
-
-def create_verification_report(monitored_path: str, verification_path: str, time_millis: int, snapshot: SystemSnapshot,
-                               diffs: List[SnapshotDiff]) -> VerificationReport:
-    pass
-
-
-def write_init_report(report: InitializationReport, report_file: str):
-    pass
-
-
-def write_verification_report(report: VerificationReport, report_file: str):
-    pass
-
-
-def write_system_snapshot(snapshot: SystemSnapshot, verification_file: str):
-    pass
+from diff_utils import compare_snapshots
+from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
+from snapshot_utils import load_snapshot, create_system_snapshot, write_system_snapshot
+from model import HashFunction
 
 
 def verify_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):
@@ -64,7 +24,7 @@ def run_initialize_mode(monitored_dir: str, report_file: str, verification_file:
     write_system_snapshot(snapshot, verification_file)
 
     ended = millis()
-    report = create_init_report(monitored_dir, verification_file, ended-started, snapshot)
+    report = create_init_report(monitored_dir, verification_file, ended - started, snapshot)
     write_init_report(report, report_file)
 
 
