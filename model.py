@@ -1,17 +1,25 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, List, Any
+from datetime import datetime
 
 HashFunction = Literal['md5', 'sha1']
-
+FileDirProperty = Literal['size', 'access rights', 'object', 'message digest', 'user', 'group', 'modification date']
+Action = Literal['add', 'delete', 'modify']
+Type = Literal['f', 'd']
 
 @dataclass()
 class Snapshot:
-    pass
+    full_path: str
+    user: str
+    group: str
+    access_mode: str
+    last_modified: datetime
 
 
 @dataclass()
 class FileSnapshot(Snapshot):
-    pass
+    message_digest: str
+    size: int
 
 
 @dataclass()
@@ -21,6 +29,7 @@ class DirSnapshot(Snapshot):
 
 @dataclass()
 class SystemSnapshot:
+    snapshots: List[Snapshot]
     hash_function: HashFunction
 
 
@@ -41,4 +50,9 @@ class VerificationReport:
 
 @dataclass()
 class SnapshotDiff:
-    pass
+    action: Action
+    path: str
+    type: Type
+    property: FileDirProperty
+    old_value: Any
+    new_value: Any
