@@ -221,3 +221,39 @@ class Test(TestCase):
             SnapshotDiff('add', 'path', 'd', 'object', None, None),
             SnapshotDiff('delete', 'path', 'f', 'object', None, None)
         ], result)
+
+    def test_complex(self):
+        s1 = SystemSnapshot([
+            DirSnapshot("path0", "u", "g", "a", datetime.datetime.max),
+            FileSnapshot("path00", "u", "g", "a", datetime.datetime.max, "md", 0),
+
+            DirSnapshot("path", "u", "g", "a", datetime.datetime.max),
+            DirSnapshot("path2", "u", "g", "a", datetime.datetime.max),
+            DirSnapshot("path3", "u", "g", "a", datetime.datetime.max),
+
+            DirSnapshot("path5", "u", "g", "a", datetime.datetime.max)
+        ], "md5")
+        s2 = SystemSnapshot([
+            DirSnapshot("path0", "u", "g", "a", datetime.datetime.max),
+            FileSnapshot("path00", "u", "g", "a", datetime.datetime.max, "md", 0),
+
+            DirSnapshot("path", "u1", "g", "a", datetime.datetime.max),
+            DirSnapshot("path2", "u", "g2", "a", datetime.datetime.max),
+            DirSnapshot("path3", "u1", "g2", "a3", datetime.datetime.max),
+
+            FileSnapshot("path4", "u", "g", "a", datetime.datetime.max, "md", 0),
+        ], "md5")
+
+        result = compare_snapshots(s1, s2)
+        self.assertCountEqual([
+            SnapshotDiff('add', 'path4', 'f', 'object', None, None),
+            SnapshotDiff('delete', 'path5', 'd', 'object', None, None),
+
+            SnapshotDiff('modify', 'path', 'd', 'user', "u", "u1"),
+            SnapshotDiff('modify', 'path2', 'd', 'group', "g", "g2"),
+
+            SnapshotDiff('modify', 'path3', 'd', 'access', "a", "a3"),
+            SnapshotDiff('modify', 'path3', 'd', 'user', "u", "u1"),
+            SnapshotDiff('modify', 'path3', 'd', 'group', "g", "g2"),
+
+        ], result)
