@@ -3,7 +3,7 @@ from typing import Literal, List, Any
 from datetime import datetime
 
 HashFunction = Literal['md5', 'sha1']
-FileDirProperty = Literal['size', 'access rights', 'object', 'message digest', 'user', 'group', 'modification date']
+FileDirProperty = Literal['size', 'access', 'object', 'hash', 'user', 'group', 'modified']
 Action = Literal['add', 'delete', 'modify']
 Type = Literal['f', 'd']
 
