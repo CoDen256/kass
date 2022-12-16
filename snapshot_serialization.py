@@ -8,8 +8,8 @@ from model import SystemSnapshot, Snapshot, FileSnapshot, DirSnapshot, HashFunct
 def parse_snapshot(row) -> Snapshot:
     path, type, user, group, access_mode, modified_date, hash, size = tuple(row)
     modified_date = datetime.datetime.strptime(modified_date, "%m-%d-%YT%H:%M:%S")
-    size = int(size)
     if type == "f":
+        size = int(size)
         return FileSnapshot(path, user, group, access_mode, modified_date, hash, size)
     if type == "d":
         return DirSnapshot(path, user, group, access_mode, modified_date)
