@@ -1,12 +1,12 @@
 import os
 
 from model import SystemSnapshot, FileSnapshot, DirSnapshot, HashFunction
-from os_utils import walktree, md5, sha256, get_user, get_group, get_modified, get_access_mode
+from os_utils import walktree, md5, sha1, get_user, get_group, get_modified, get_access_mode
 
 
 # CREATE #
 def create_file_snapshot(file_path: str, stat_result: os.stat_result, function: HashFunction) -> FileSnapshot:
-    compute_hash = {"sha256": sha256, "md5": md5}[function]
+    compute_hash = {"sha1": sha1, "md5": md5}[function]
     return FileSnapshot(
         full_path=file_path,
         size=stat_result.st_size,

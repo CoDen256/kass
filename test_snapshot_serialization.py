@@ -2,7 +2,7 @@ import datetime
 from unittest import TestCase
 
 from model import SystemSnapshot, DirSnapshot, FileSnapshot, HashFunction
-from os_utils import resolve, sha256
+from os_utils import resolve, sha1
 from snapshot_serialization import write_system_snapshot, load_system_snapshot
 
 
@@ -36,8 +36,8 @@ class Test(TestCase):
     def test_write_snapshot(self):
         target = resolve("./test/serialize/test-snapshot.csv")
         write_system_snapshot(Test.snap, target)
-        self.assertEqual("ca75065e9cb9664dc497ccc0ce2d9a1d573bfb068eed085deedb1e02b7e48c35", sha256(target))
-        self.assertEqual(sha256(target), sha256(Test.source))
+        self.assertEqual("8e8ba454ccce37e3f913c7217db75b0476f262db", sha1(target))
+        self.assertEqual(sha1(target), sha1(Test.source))
 
     def test_parse_write_snapshot(self):
         target = resolve("./test/serialize/test-2-snapshot.csv")

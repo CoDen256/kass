@@ -13,8 +13,8 @@ if platform == "linux":
     pwd_grp_present = True
 
 
-def sha256(file):
-    return compute_hash(file, hashlib.sha256())
+def sha1(file):
+    return compute_hash(file, hashlib.sha1())
 
 
 def md5(file):
