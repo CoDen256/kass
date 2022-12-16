@@ -1,6 +1,7 @@
-from datetime import datetime
 import hashlib
 import os
+from datetime import datetime
+from pathlib import Path
 from stat import S_ISDIR, S_ISREG, ST_MODE
 from sys import platform
 
@@ -24,6 +25,18 @@ def md5(file):
 
 def sanitize(path):
     return path
+
+
+def exists(path):
+    return os.path.exists(path)
+
+
+def is_dir(path):
+    return os.path.isdir(path)
+
+
+def is_parent_of_file(path, file):
+    return Path(path) in Path(file).parents
 
 
 def compute_hash(file, digest, buffer=65636):
@@ -56,7 +69,7 @@ def walktree(top, callback_file, callback_dir):
 
 def get_user(stat_result: os.stat_result) -> str:
     uid = stat_result.st_uid
-    if not pwd_grp_present:return str(uid)
+    if not pwd_grp_present: return str(uid)
     return pwd.getpwuid(uid)
 
 

@@ -1,7 +1,7 @@
 import argparse
 
 from model import HASH_FUNCTIONS
-from os_utils import resolve
+from os_utils import resolve, sanitize
 from runner import run_initialize_mode, run_verification_mode
 
 
@@ -27,9 +27,9 @@ def arg_parser():
 def main():
     parser = arg_parser()
     args = parser.parse_args()
-    monitored_dir = resolve(args.monitored_directory)
-    verification_file = resolve(args.verification_file)
-    report_file = resolve(args.report_file)
+    monitored_dir = sanitize(resolve(args.monitored_directory))
+    verification_file = sanitize(resolve(args.verification_file))
+    report_file = sanitize(resolve(args.report_file))
     if args.init:
         if args.hash_function is None:
             parser.error("The following arguments are required for Initialization mode: -H")

@@ -1,16 +1,40 @@
+import sys
+
 from diff_utils import compare_snapshots
 from model import HashFunction
 from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
+from os_utils import is_dir, exists, is_parent_of_file
 from snapshot_generation import create_system_snapshot
 from snapshot_serialization import load_system_snapshot, write_system_snapshot
 import time
 
+
+def error(message):
+    sys.exit(message)
+
+
+def verify(monitored_dir: str, report_file: str, verification_file: str):
+    if not exists(monitored_dir):
+        error(f"Monitored directory path does not exist: {monitored_dir}")
+
+    if not is_dir(monitored_dir):
+        error(f"Monitored directory path is not a directory: {monitored_dir}")
+
+    if is_parent_of_file(monitored_dir, report_file):
+        error(f"Report file should be outside of the monitored directory: {report_file} is inside")
+
+    if is_parent_of_file(monitored_dir, verification_file):
+        error(f"Verification file should be outside of the monitored directory: {verification_file} is inside {monitored_dir}")
+
+
 def verify_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):
-    pass
+    verify(monitored_dir, report_file, verification_file)
 
 
 def verify_verification_mode(monitored_dir: str, report_file: str, verification_file: str):
-    pass
+    verify(monitored_dir, report_file, verification_file)
+    if not exists(verification_file):
+        error(f"Verification file does not exist {verification_file}")
 
 
 def millis() -> int:
