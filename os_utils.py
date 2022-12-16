@@ -12,8 +12,6 @@ if platform == "linux":
 
     pwd_grp_present = True
 
-absolute_path = os.path.dirname(__file__)
-
 
 def sha256(file):
     return compute_hash(file, hashlib.sha256())
@@ -21,10 +19,6 @@ def sha256(file):
 
 def md5(file):
     return compute_hash(file, hashlib.md5())
-
-
-def sanitize(path):
-    return path
 
 
 def exists(path):
@@ -50,7 +44,7 @@ def compute_hash(file, digest, buffer=65636):
 
 
 def resolve(subpath):
-    return os.path.join(absolute_path, subpath)
+    return os.path.abspath(subpath)
 
 
 def walktree(top, callback_file, callback_dir):
