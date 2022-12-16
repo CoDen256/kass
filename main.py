@@ -2,6 +2,7 @@ import argparse
 from model import HashFunction
 from runner import run_initialize_mode, run_verification_mode
 
+
 def arg_parser():
     parser = argparse.ArgumentParser(
         prog='siv.py',
@@ -22,10 +23,15 @@ def arg_parser():
 
 
 def main():
-    args = arg_parser().parse_args()
-    print(args)
-    if args.init: pass
-        # run_initialize_mode(args.)
+    parser = arg_parser()
+    args = parser.parse_args()
+    if args.init:
+        if args.hash_function is None:
+            parser.error("The following arguments are required for Initialization mode: -H")
+        run_initialize_mode(args.monitored_directory, args.verification_file, args.report_file, args.hash_function)
+    if args.verify:
+        run_verification_mode(args.monitored_directory, args.verification_file, args.report_file)
+
 
 if __name__ == '__main__':
     main()
