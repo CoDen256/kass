@@ -12,6 +12,10 @@ def md5(file):
     return compute_hash(file, hashlib.md5())
 
 
+def sanitize(path):
+    return path
+
+
 def compute_hash(file, digest, buffer=65636):
     with open(file, 'rb') as f:
         while True:
