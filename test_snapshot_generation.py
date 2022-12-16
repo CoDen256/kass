@@ -6,6 +6,8 @@ from model import FileSnapshot, DirSnapshot
 from os_utils import resolve, get_modified
 from snapshot_generation import create_dir_snapshot, create_file_snapshot, create_system_snapshot
 
+USER = "student"
+
 
 def m(path):
     return get_modified(os.stat(path))
@@ -14,6 +16,7 @@ def m(path):
 class Test(TestCase):
     maxDiff = None
 
+    # @skip
     def test_create_file_snapshot(self):
         target = resolve("./test/generate/file.txt")
         result = os.stat(target)
@@ -24,8 +27,8 @@ class Test(TestCase):
         self.assertEqual(target, snapshot.full_path)
         # self.assertEqual(dt(2022, 12, 16, 18, 47, 18), snapshot.last_modified)  # stat -c '%y' filename
         if platform == "linux":
-            self.assertEqual("coden", snapshot.user)
-            self.assertEqual("coden", snapshot.group)
+            self.assertEqual(USER, snapshot.user)
+            self.assertEqual(USER, snapshot.group)
             self.assertEqual("664", snapshot.access_mode)
         else:
             self.assertEqual("0", snapshot.user)
@@ -40,8 +43,8 @@ class Test(TestCase):
         self.assertEqual(target, snapshot.full_path)
         # self.assertEqual(dt(2022, 12, 16, 18, 52, 12), snapshot.last_modified)  # stat -c '%y' filename
         if platform == "linux":
-            self.assertEqual("coden", snapshot.user)
-            self.assertEqual("coden", snapshot.group)
+            self.assertEqual(USER, snapshot.user)
+            self.assertEqual(USER, snapshot.group)
             self.assertEqual("775", snapshot.access_mode)
         else:
             self.assertEqual("0", snapshot.user)
@@ -58,10 +61,11 @@ class Test(TestCase):
 
         self.assertCountEqual(expected, result.snapshots)
 
+    @skip
     def test_create_system_snapshot_linux(self):
         target = resolve("./test/generate/full")
         result = create_system_snapshot(target, "md5")
-        expected = self.generate("coden", "664", "coden", "775")
+        expected = self.generate(USER, "664", USER, "775")
 
         self.assertEqual("md5", result.hash_function)
         self.assertCountEqual(expected, result.snapshots)

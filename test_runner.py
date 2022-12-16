@@ -13,7 +13,7 @@ from snapshot_serialization import write_system_snapshot, load_system_snapshot
 
 base = resolve("./test/env")
 
-USER = "coden"
+USER = "student"
 
 def sub(path):
     return resolve(base + "/" + path)
@@ -49,7 +49,8 @@ def chmod(path, mode):
 
 
 def chown(path, owner, group):
-    os.system(f'sudo /bin/chown {owner}:{group} ' + sub(path))
+    if exists(sub(path)):
+        os.system(f'sudo /bin/chown {owner}:{group} ' + sub(path))
 
 
 def m(path):
@@ -96,7 +97,6 @@ def change():
 
 def cleanup():
     chown("o.txt", USER, USER)
-    chown("alpha/beta", USER, USER)
     rmdir(".")
     rmdir("../out")
 
@@ -110,7 +110,9 @@ class Test(TestCase):
         change()
 
     def test_integration(self):
+        print("cleaning up")
         cleanup()
+        print("initializing...")
         init()
         write_system_snapshot(create_system_snapshot(base, 'md5'), sub("../out/snap.txt"))
         snap = load_system_snapshot(sub("../out/snap.txt"))
@@ -136,8 +138,8 @@ class Test(TestCase):
 
         self.assertEqual(snap.hash_function, 'md5')
         self.assertCountEqual(snap.snapshots, expected)
-
         time.sleep(1)
+        print("changing")
         change()
         changes = [
             SnapshotDiff("delete", sub("alpha/beta/gamma"), "d", "object", None, None),
@@ -165,6 +167,7 @@ class Test(TestCase):
         ]
         compared = compare_snapshots(snap, create_system_snapshot(base, 'md5'))
         self.assertCountEqual(changes, compared)
+        print("cleaning")
         cleanup()
 
 

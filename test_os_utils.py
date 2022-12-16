@@ -4,7 +4,8 @@ from os_utils import walktree, resolve, is_parent_of_file
 
 class Test(TestCase):
     def test_walktree(self):
-        walktree(resolve("test"), print, print)
+        pass
+        # walktree(resolve("test"), print, print)
 
     def test_is_parent_of_file(self):
         self.assertTrue(is_parent_of_file("/a/b/c", "/a/b/c/d"))
