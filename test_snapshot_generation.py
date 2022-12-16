@@ -1,10 +1,10 @@
 import os
-from unittest import TestCase, skip
-from snapshot_generation import create_dir_snapshot, create_file_snapshot, create_system_snapshot
-from os_utils import resolve, get_modified
 from sys import platform
-from datetime import datetime as dt
+from unittest import TestCase, skip
+
 from model import FileSnapshot, DirSnapshot
+from os_utils import resolve, get_modified
+from snapshot_generation import create_dir_snapshot, create_file_snapshot, create_system_snapshot
 
 
 def m(path):
