@@ -15,6 +15,6 @@ def read_csv(file, parse_row, parse_header):
 
 
 def write_csv(file, rows):
-    with open(file, 'w', encoding='utf-8') as f:
+    with open(file, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f, delimiter=',')
         writer.writerows(rows)

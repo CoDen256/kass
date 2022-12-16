@@ -41,16 +41,3 @@ def write_system_snapshot(snapshot: SystemSnapshot, verification_file: str):
     content = [format_snapshot(s) for s in snapshot.snapshots]
     header = format_header(snapshot)
     write_csv(verification_file, [header] + content)
-
-
-# CREATE #
-def create_file_snapshot(file_path: str, function: HashFunction) -> FileSnapshot:
-    pass
-
-
-def create_dir_snapshot(dir_path: str) -> DirSnapshot:
-    pass
-
-
-def create_system_snapshot(monitored_path: str, function: HashFunction) -> SystemSnapshot:
-    pass

@@ -1,7 +1,8 @@
 from diff_utils import compare_snapshots
-from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
-from snapshot_utils import load_system_snapshot, create_system_snapshot, write_system_snapshot
 from model import HashFunction
+from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
+from snapshot_generation import create_system_snapshot
+from snapshot_serialization import load_system_snapshot, write_system_snapshot
 
 
 def verify_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):

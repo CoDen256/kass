@@ -1,0 +1,8 @@
+path,type,user,group,access_mode,modified_date,md5,size
+/root/dir/,d,user-2,group-2,777,01-01-0001T00:00:00,,
+/root/dir/file-2.txt,f,user-1,group-0,666,12-13-2020T23:24:30,aaa,1
+/root/file-3.txt,f,user-0,group-0,555,10-10-2010T10:10:50,bbb,1
+/root/dir/sub/folder/file-1.txt,f,user-1,group-1,444,12-31-9999T23:59:59,ccc,1
+/root/dir/sub,d,user-3,group-3,333,10-10-2010T10:10:50,,
+/root/dir/sub/folder,d,user-4,group-4,111,11-12-2030T22:50:00,,
+/root/dir/sub/folder/deeper,d,user-5,group-5,222,12-13-2020T23:24:30,,
