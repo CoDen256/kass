@@ -1,15 +1,19 @@
 import hashlib
-import os, shutil
+import os
+import shutil
 from unittest import TestCase
 
-from model import FileSnapshot, DirSnapshot
+import time
+
+from diff_utils import compare_snapshots
+from model import FileSnapshot, DirSnapshot, SnapshotDiff
 from os_utils import resolve, exists, get_modified
 from snapshot_generation import create_system_snapshot
 from snapshot_serialization import write_system_snapshot, load_system_snapshot
-from diff_utils import compare_snapshots
 
 base = resolve("./test/env")
 
+USER = "coden"
 
 def sub(path):
     return resolve(base + "/" + path)
@@ -24,6 +28,11 @@ def mkdir(path, mode=0o777):
 def rmdir(path):
     if exists(sub(path)):
         shutil.rmtree(sub(path))
+
+
+def rm(path):
+    if exists(sub(path)):
+        os.remove(sub(path))
 
 
 def echo(path, content):
@@ -66,14 +75,28 @@ def init():
     chmod("o.txt", 0o734)
 
     echo("alpha/beta/b.txt", "B\n" * 5)
-    chmod("alpha/beta/b.txt", 0o777)
+    chmod("alpha/beta/b.txt", 0o766)
 
 
 def change():
-    pass
+    rmdir("alpha/beta/gamma")
+    rm("delta/d.txt")
+
+    echo("alpha/c.txt", "C")
+    mkdir("alpha/new")
+
+    echo("alpha/a.txt", "A")
+
+
+    echo("o.txt", " ")
+    chmod("o.txt", 0o744)
+    chown("o.txt", "bob", "alice")
+
 
 
 def cleanup():
+    chown("o.txt", USER, USER)
+    chown("alpha/beta", USER, USER)
     rmdir(".")
     rmdir("../out")
 
@@ -84,30 +107,67 @@ class Test(TestCase):
     def test_init(self):
         cleanup()
         init()
-
+        change()
 
     def test_integration(self):
         cleanup()
         init()
         write_system_snapshot(create_system_snapshot(base, 'md5'), sub("../out/snap.txt"))
         snap = load_system_snapshot(sub("../out/snap.txt"))
-        user = "coden"
-        group = "coden"
+        user = USER
+        group = USER
+        modified_alpha = m("alpha")
+        modified_a = m("alpha/a.txt")
+        modified_o = m("o.txt")
+        modified_delta = m("delta")
+        modified_beta = m("alpha/beta")
         expected = [
-            DirSnapshot(sub("alpha"), user, group, "744", m("alpha")),
-            DirSnapshot(sub("delta"), user, group, "741", m("delta")),
-            DirSnapshot(sub("alpha/beta"), user, group, "724", m("alpha/beta")),
+            DirSnapshot(sub("alpha"), user, group, "744", modified_alpha),
+            DirSnapshot(sub("delta"), user, group, "741", modified_delta),
+            DirSnapshot(sub("alpha/beta"), user, group, "724", modified_beta),
             DirSnapshot(sub("alpha/beta/gamma"), user, group, "744", m("alpha/beta/gamma")),
 
-            FileSnapshot(sub("alpha/a.txt"), user, group, "711", m("alpha/a.txt"), md5("A\n"), 2),
+            FileSnapshot(sub("alpha/a.txt"), user, group, "711", modified_a, md5("A\n"), 2),
             FileSnapshot(sub("delta/d.txt"), user, group, "734", m("delta/d.txt"), md5("D\n" * 100), 200),
-            FileSnapshot(sub("o.txt"), user, group, "734", m("o.txt"), md5("O\n" * 500), 1000),
-            FileSnapshot(sub("alpha/beta/b.txt"), user, group, "777", m("alpha/beta/b.txt"), md5("B\n" * 5), 10)
+            FileSnapshot(sub("o.txt"), user, group, "734", modified_o, md5("O\n" * 500), 1000),
+            FileSnapshot(sub("alpha/beta/b.txt"), user, group, "766", m("alpha/beta/b.txt"), md5("B\n" * 5), 10)
 
         ]
 
         self.assertEqual(snap.hash_function, 'md5')
         self.assertCountEqual(snap.snapshots, expected)
+
+        time.sleep(1)
+        change()
+        changes = [
+            SnapshotDiff("delete", sub("alpha/beta/gamma"), "d", "object", None, None),
+            SnapshotDiff("delete", sub("delta/d.txt"), "f", "object", None, None),
+
+            SnapshotDiff("modify", sub("delta"), "d", "modified", modified_delta, m("delta")),
+            SnapshotDiff("modify", sub("alpha/beta"), "d", "modified", modified_beta, m("alpha/beta")),
+
+            SnapshotDiff("add", sub("alpha/c.txt"), "f", "object", None, None),
+            SnapshotDiff("add", sub("alpha/new"), "d", "object", None, None),
+
+            SnapshotDiff("modify", sub("alpha/a.txt"), "f", "hash", md5("A\n"), md5("A\nA")),
+            SnapshotDiff("modify", sub("alpha/a.txt"), "f", "modified", modified_a, m("alpha/a.txt")),
+            SnapshotDiff("modify", sub("alpha/a.txt"), "f", "size", 2, 3),
+
+            SnapshotDiff("modify", sub("alpha"), "d", "modified", modified_alpha, m("alpha")),
+
+            SnapshotDiff("modify", sub("o.txt"), "f", "modified", modified_o, m("o.txt")),
+            SnapshotDiff("modify", sub("o.txt"), "f", "size", 1000, 1001),
+            SnapshotDiff("modify", sub("o.txt"), "f", "hash", md5("O\n" * 500), md5("O\n" * 500 + " ")),
+            SnapshotDiff("modify", sub("o.txt"), "f", "access", "734", "744"),
+
+            SnapshotDiff("modify", sub("o.txt"), "f", "user", user, "bob"),
+            SnapshotDiff("modify", sub("o.txt"), "f", "group", group, "alice"),
+        ]
+        compared = compare_snapshots(snap, create_system_snapshot(base, 'md5'))
+        self.assertCountEqual(changes, compared)
+        cleanup()
+
+
 
     def test_clean_up(self):
         cleanup()
