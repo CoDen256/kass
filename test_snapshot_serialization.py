@@ -36,7 +36,7 @@ class Test(TestCase):
     def test_write_snapshot(self):
         target = resolve("./test/serialize/test-snapshot.csv")
         write_system_snapshot(Test.snap, target)
-        self.assertEqual("fc275690bd32c94f842ceb68daba34a984c1362b", sha1(target))
+        self.assertEqual("4adaa9dd9d3dc77feb3ed6d8527d01df2a6168fb", sha1(target))
         self.assertEqual(sha1(target), sha1(Test.source))
 
     def test_parse_write_snapshot(self):
