@@ -13,34 +13,34 @@ class Test(TestCase):
         result = os.stat(target)
         snapshot = create_file_snapshot(target, result, "md5")
 
-        self.assertEquals(194, snapshot.size)
-        self.assertEquals("d8425199a36abc6266699a6382f674a8", snapshot.message_digest)
-        self.assertEquals(target, snapshot.full_path)
-        self.assertEquals(dt(2022, 12, 16, 16, 36, 5), snapshot.last_modified)  # stat -c '%y' filename
+        self.assertEqual(194, snapshot.size)
+        self.assertEqual("d8425199a36abc6266699a6382f674a8", snapshot.message_digest)
+        self.assertEqual(target, snapshot.full_path)
+        self.assertEqual(dt(2022, 12, 16, 16, 36, 5), snapshot.last_modified)  # stat -c '%y' filename
         if platform == "linux":
-            self.assertEquals("coden", snapshot.user)
-            self.assertEquals("coden", snapshot.group)
-            self.assertEquals("777", snapshot.access_mode)
+            self.assertEqual("coden", snapshot.user)
+            self.assertEqual("coden", snapshot.group)
+            self.assertEqual("777", snapshot.access_mode)
         else:
-            self.assertEquals("0", snapshot.user)
-            self.assertEquals("0", snapshot.group)
-            self.assertEquals("666", snapshot.access_mode)  # stat -c "%a" file.txt # 33206
+            self.assertEqual("0", snapshot.user)
+            self.assertEqual("0", snapshot.group)
+            self.assertEqual("666", snapshot.access_mode)  # stat -c "%a" file.txt # 33206
 
     def test_create_dir_snapshot(self):
         target = resolve("./test/generate/folder")
         result = os.stat(target)
         snapshot = create_dir_snapshot(target, result)
 
-        self.assertEquals(target, snapshot.full_path)
-        self.assertEquals(dt(2022, 12, 16, 17, 22, 23), snapshot.last_modified)  # stat -c '%y' filename
+        self.assertEqual(target, snapshot.full_path)
+        self.assertEqual(dt(2022, 12, 16, 17, 22, 23), snapshot.last_modified)  # stat -c '%y' filename
         if platform == "linux":
-            self.assertEquals("coden", snapshot.user)
-            self.assertEquals("coden", snapshot.group)
-            self.assertEquals("777", snapshot.access_mode)
+            self.assertEqual("coden", snapshot.user)
+            self.assertEqual("coden", snapshot.group)
+            self.assertEqual("777", snapshot.access_mode)
         else:
-            self.assertEquals("0", snapshot.user)
-            self.assertEquals("0", snapshot.group)
-            self.assertEquals("777", snapshot.access_mode)
+            self.assertEqual("0", snapshot.user)
+            self.assertEqual("0", snapshot.group)
+            self.assertEqual("777", snapshot.access_mode)
 
     def test_create_system_snapshot_windows(self):
         target = resolve("./test/generate/full")
