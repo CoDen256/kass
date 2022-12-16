@@ -64,13 +64,13 @@ def walktree(top, callback_file, callback_dir):
 def get_user(stat_result: os.stat_result) -> str:
     uid = stat_result.st_uid
     if not pwd_grp_present: return str(uid)
-    return pwd.getpwuid(uid)
+    return pwd.getpwuid(uid).pw_name
 
 
 def get_group(stat_result: os.stat_result) -> str:
     gid = stat_result.st_gid
     if not pwd_grp_present: return str(gid)
-    return grp.getgrgid(gid)
+    return grp.getgrgid(gid).gr_name
 
 
 def get_modified(stat_result: os.stat_result) -> datetime:
