@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 import argparse
 
 from model import HASH_FUNCTIONS
@@ -27,7 +27,7 @@ def arg_parser():
 
 def main():
     parser = arg_parser()
-    args = parser.parse_args([''])
+    args = parser.parse_args()
     monitored_dir = resolve(args.monitored_directory)
     verification_file = resolve(args.verification_file)
     report_file = resolve(args.report_file)
