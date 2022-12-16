@@ -43,7 +43,6 @@ def millis() -> int:
 
 def run_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):
     print(f"Running init {monitored_dir} {report_file} {verification_file} {hash_function}")
-    return
     started = millis()
     verify_initialize_mode(monitored_dir, report_file, verification_file, hash_function)
 
@@ -57,7 +56,6 @@ def run_initialize_mode(monitored_dir: str, report_file: str, verification_file:
 
 def run_verification_mode(monitored_dir: str, report_file: str, verification_file: str):
     print(f"Running verify {monitored_dir} {report_file} {verification_file}")
-    return
     started = millis()
     verify_verification_mode(monitored_dir, report_file, verification_file)
 

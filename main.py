@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 
 from model import HASH_FUNCTIONS
