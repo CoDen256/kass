@@ -59,6 +59,7 @@ class SnapshotDiff:
 class Report:
     monitored_dir: str
     verification_file: str
+    report_file: str
     directories_parsed: int
     files_parsed: int
     execution_time: int

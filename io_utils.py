@@ -18,3 +18,9 @@ def write_csv(file, rows):
     with open(file, 'w', encoding='utf-8', newline='') as f:
         writer = csv.writer(f, delimiter=',')
         writer.writerows(rows)
+
+
+def write_rows(file, rows):
+    with open(file, 'w', encoding='utf-8') as f:
+        for row in rows:
+            f.write(row+"\n")
