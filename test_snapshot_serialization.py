@@ -1,7 +1,7 @@
 import datetime
 from unittest import TestCase
 
-from model import SystemSnapshot, DirSnapshot, FileSnapshot
+from model import SystemSnapshot, DirSnapshot, FileSnapshot, HashFunction
 from os_utils import resolve, sha256
 from snapshot_serialization import write_system_snapshot, load_system_snapshot
 
@@ -24,7 +24,7 @@ class Test(TestCase):
             DirSnapshot("/root/dir/sub/folder", "user-4", "group-4", "111", date2),
             DirSnapshot("/root/dir/sub/folder/deeper", "user-5", "group-5", "222", date1),
         ],
-        "md5"
+        'md5'
     )
     source = resolve("./test/serialize/example-snapshot.csv")
 

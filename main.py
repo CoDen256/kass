@@ -1,7 +1,9 @@
 import argparse
-from model import HashFunction
-from runner import run_initialize_mode, run_verification_mode
+
+from model import HASH_FUNCTIONS
 from os_utils import resolve
+from runner import run_initialize_mode, run_verification_mode
+
 
 def arg_parser():
     parser = argparse.ArgumentParser(
@@ -16,7 +18,7 @@ def arg_parser():
     parser.add_argument("-V", dest='verification_file', required=True)
     parser.add_argument("-R", dest='report_file', required=True)
 
-    parser.add_argument("-H", choices=list([i.value for i in HashFunction]),
+    parser.add_argument("-H", choices=HASH_FUNCTIONS,
                         dest='hash_function',
                         help="Hash function to be used for computing message digest of files")
     return parser

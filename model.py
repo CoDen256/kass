@@ -4,12 +4,8 @@ from typing import Literal, List, Any
 from datetime import datetime
 import abc
 
-
-class HashFunction(enum.Enum):
-    MD5 = 'md5'
-    SHA1 = 'sha1'
-
-
+HASH_FUNCTIONS = ['md5', 'sha1']
+HashFunction = Literal['md5', 'sha1']
 FileDirProperty = Literal['size', 'access', 'object', 'hash', 'user', 'group', 'modified']
 Action = Literal['add', 'delete', 'modify']
 ObjectType = Literal['f', 'd']
@@ -50,21 +46,6 @@ class SystemSnapshot:
 
 
 @dataclass()
-class Report:
-    pass
-
-
-@dataclass()
-class InitializationReport:
-    pass
-
-
-@dataclass()
-class VerificationReport:
-    pass
-
-
-@dataclass()
 class SnapshotDiff:
     action: Action
     path: str
@@ -72,3 +53,23 @@ class SnapshotDiff:
     property: FileDirProperty
     old_value: Any
     new_value: Any
+
+
+@dataclass()
+class Report:
+    monitored_dir: str
+    verification_file: str
+    directories_parsed: int
+    files_parsed: int
+    execution_time: int
+
+
+@dataclass()
+class InitializationReport(Report):
+    pass
+
+
+@dataclass()
+class VerificationReport(Report):
+    warnings: int
+    diffs: List[SnapshotDiff]
