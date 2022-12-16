@@ -3,7 +3,7 @@ from model import HashFunction
 from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
 from snapshot_generation import create_system_snapshot
 from snapshot_serialization import load_system_snapshot, write_system_snapshot
-
+import time
 
 def verify_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):
     pass
@@ -14,7 +14,7 @@ def verify_verification_mode(monitored_dir: str, report_file: str, verification_
 
 
 def millis() -> int:
-    pass
+    return round(time.time() * 1000)
 
 
 def run_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):

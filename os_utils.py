@@ -1,5 +1,6 @@
-import os
 import hashlib
+import os
+from stat import *
 
 absolute_path = os.path.dirname(__file__)
 
@@ -28,3 +29,17 @@ def compute_hash(file, digest, buffer=65636):
 
 def resolve(subpath):
     return os.path.join(absolute_path, subpath)
+
+
+def walktree(top, callback_file, callback_dir):
+    for f in os.listdir(top):
+        pathname = os.path.join(top, f)
+        stat_result = os.stat(pathname)
+        if S_ISDIR(stat_result.st_mode):
+            callback_dir(pathname, stat_result)
+            walktree(pathname, callback_file, callback_dir)
+        elif S_ISREG(stat_result.st_mode):
+            callback_file(pathname, stat_result)
+        else:
+            # Unknown file type, print a message
+            print('Skipping %s' % pathname)
