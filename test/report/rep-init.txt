@@ -1,0 +1,6 @@
+Monitored directory: /mon
+Verification file: /ver
+Report file: /rep
+Directories parsed: 3
+Files parsed: 5
+Time to complete: 10 ms

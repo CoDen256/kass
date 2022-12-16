@@ -14,7 +14,7 @@ class Test(TestCase):
 
     snap = SystemSnapshot(
         [
-            DirSnapshot("/root/dir/", "user-2", "group-2", "777", datetime.datetime.min),
+            DirSnapshot("/root/dir/", "user-2", "group-2", "777", datetime.datetime.max.replace(microsecond=0)),
             FileSnapshot("/root/dir/file-2.txt", "user-1", "group-0", "666", date1, "aaa", 1),
             FileSnapshot("/root/file-3.txt", "user-0", "group-0", "555", date0, "bbb", 1),
             FileSnapshot("/root/dir/sub/folder/file-1.txt", "user-1", "group-1", "444",
@@ -36,7 +36,7 @@ class Test(TestCase):
     def test_write_snapshot(self):
         target = resolve("./test/serialize/test-snapshot.csv")
         write_system_snapshot(Test.snap, target)
-        self.assertEqual("8e8ba454ccce37e3f913c7217db75b0476f262db", sha1(target))
+        self.assertEqual("fc275690bd32c94f842ceb68daba34a984c1362b", sha1(target))
         self.assertEqual(sha1(target), sha1(Test.source))
 
     def test_parse_write_snapshot(self):

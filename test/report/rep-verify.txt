@@ -1,0 +1,19 @@
+Monitored directory: monitored
+Verification file: verification_file
+Report file: report_file
+Directories parsed: 6
+Files parsed: 4
+Time to complete: 231 ms
+Warnings: 10
+
+
+(F) path MODIFIED: object WAS: 0 | NOW: 1
+(D) path MODIFIED: size WAS: 0 | NOW: 1
+(F) path ADDED
+(D) path ADDED
+(F) path MODIFIED: user WAS: 0 | NOW: 1
+(D) path MODIFIED: group WAS: 0 | NOW: 1
+(F) path DELETED
+(F) path ADDED
+(D) path MODIFIED: size WAS: 0 | NOW: 1
+(D) path ADDED
