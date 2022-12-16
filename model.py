@@ -1,9 +1,15 @@
+import enum
 from dataclasses import dataclass
 from typing import Literal, List, Any
 from datetime import datetime
 import abc
 
-HashFunction = Literal['md5', 'sha1']
+
+class HashFunction(enum.Enum):
+    MD5 = 'md5'
+    SHA1 = 'sha1'
+
+
 FileDirProperty = Literal['size', 'access', 'object', 'hash', 'user', 'group', 'modified']
 Action = Literal['add', 'delete', 'modify']
 ObjectType = Literal['f', 'd']
