@@ -15,14 +15,15 @@ def sub(path):
     return resolve(base + "/" + path)
 
 
-def mkdir(path, mode=0o666):
+def mkdir(path, mode=0o777):
     absolute = sub(path)
     if not exists(absolute):
         os.mkdir(absolute, mode)
 
 
 def rmdir(path):
-    shutil.rmtree(sub(path))
+    if exists(sub(path)):
+        shutil.rmtree(sub(path))
 
 
 def echo(path, content):
@@ -50,19 +51,19 @@ def init():
     mkdir("../out")
     mkdir(".")
 
-    mkdir("alpha", 0o666)
-    mkdir("delta", 0o642)
-    mkdir("alpha/beta", 0o624)
-    mkdir("alpha/beta/gamma", 0o444)
+    mkdir("alpha", 0o744)
+    mkdir("delta", 0o741)
+    mkdir("alpha/beta", 0o724)
+    mkdir("alpha/beta/gamma", 0o744)
 
     echo("alpha/a.txt", "A\n")
-    chmod("alpha/a.txt", 0o111)
+    chmod("alpha/a.txt", 0o711)
 
     echo("delta/d.txt", "D\n" * 100)
-    chmod("delta/d.txt", 0o234)
+    chmod("delta/d.txt", 0o734)
 
     echo("o.txt", "O\n" * 500)
-    chmod("o.txt", 0o234)
+    chmod("o.txt", 0o734)
 
     echo("alpha/beta/b.txt", "B\n" * 5)
     chmod("alpha/beta/b.txt", 0o777)
@@ -78,25 +79,30 @@ def cleanup():
 
 
 class Test(TestCase):
+    maxDiff = None
 
     def test_init(self):
+        cleanup()
         init()
 
+
     def test_integration(self):
+        cleanup()
+        init()
         write_system_snapshot(create_system_snapshot(base, 'md5'), sub("../out/snap.txt"))
         snap = load_system_snapshot(sub("../out/snap.txt"))
         user = "coden"
         group = "coden"
         expected = [
-            DirSnapshot("alpha", user, group, "666", m("alpha")),
-            DirSnapshot("delta", user, group, "642", m("delta")),
-            DirSnapshot("alpha/beta", user, group, "624", m("alpha/beta")),
-            DirSnapshot("alpha/beta/gamma", user, group, "444", m("alpha/beta/gamma")),
+            DirSnapshot(sub("alpha"), user, group, "744", m("alpha")),
+            DirSnapshot(sub("delta"), user, group, "741", m("delta")),
+            DirSnapshot(sub("alpha/beta"), user, group, "724", m("alpha/beta")),
+            DirSnapshot(sub("alpha/beta/gamma"), user, group, "744", m("alpha/beta/gamma")),
 
-            FileSnapshot("alpha/a.txt", user, group, "111", m("alpha/a.txt"), md5("A\n"), 4),
-            FileSnapshot("delta/d.txt", user, group, "234", m("delta/d.txt"), md5("D\n" * 100), 400),
-            FileSnapshot("o.txt", user, group, "234", m("o.txt"), md5("O\n" * 500), 2000),
-            FileSnapshot("alpha/beta/b.txt", user, group, "777", m("alpha/beta/b.txt"), md5("B\n" * 5), 20)
+            FileSnapshot(sub("alpha/a.txt"), user, group, "711", m("alpha/a.txt"), md5("A\n"), 2),
+            FileSnapshot(sub("delta/d.txt"), user, group, "734", m("delta/d.txt"), md5("D\n" * 100), 200),
+            FileSnapshot(sub("o.txt"), user, group, "734", m("o.txt"), md5("O\n" * 500), 1000),
+            FileSnapshot(sub("alpha/beta/b.txt"), user, group, "777", m("alpha/beta/b.txt"), md5("B\n" * 5), 10)
 
         ]
 
