@@ -1,6 +1,15 @@
+from datetime import datetime
 import hashlib
 import os
-from stat import *
+from stat import S_ISDIR, S_ISREG, ST_MODE
+from sys import platform
+
+pwd_grp_present = False
+if platform == "linux":
+    import pwd
+    import grp
+
+    pwd_grp_present = True
 
 absolute_path = os.path.dirname(__file__)
 
@@ -43,3 +52,23 @@ def walktree(top, callback_file, callback_dir):
         else:
             # Unknown file type, print a message
             print('Skipping %s' % pathname)
+
+
+def get_user(stat_result: os.stat_result) -> str:
+    uid = stat_result.st_uid
+    if not pwd_grp_present:return str(uid)
+    return pwd.getpwuid(uid)
+
+
+def get_group(stat_result: os.stat_result) -> str:
+    gid = stat_result.st_gid
+    if not pwd_grp_present: return str(gid)
+    return grp.getgrgid(gid)
+
+
+def get_modified(stat_result: os.stat_result) -> datetime:
+    return datetime.fromtimestamp(stat_result.st_mtime).replace(microsecond=0)
+
+
+def get_access_mode(stat_result: os.stat_result) -> str:
+    return oct(stat_result[ST_MODE])[-3:]
