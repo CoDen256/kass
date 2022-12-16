@@ -19,11 +19,24 @@ class Test(TestCase):
         if platform == "linux":
             self.assertEquals("coden", snapshot.user)
             self.assertEquals("coden", snapshot.group)
-            self.assertEquals("777", snapshot.access_mode)  # stat -c "%a" file.txt # 33206
+            self.assertEquals("777", snapshot.access_mode)
         else:
             self.assertEquals("0", snapshot.user)
             self.assertEquals("0", snapshot.group)
             self.assertEquals("666", snapshot.access_mode)  # stat -c "%a" file.txt # 33206
 
     def test_create_dir_snapshot(self):
-        self.fail()
+        target = resolve("./test/generate/folder")
+        result = os.stat(target)
+        snapshot = create_dir_snapshot(target, result)
+
+        self.assertEquals(target, snapshot.full_path)
+        self.assertEquals(datetime.datetime(2022, 12, 16, 17, 22, 23), snapshot.last_modified)  # stat -c '%y' filename
+        if platform == "linux":
+            self.assertEquals("coden", snapshot.user)
+            self.assertEquals("coden", snapshot.group)
+            self.assertEquals("777", snapshot.access_mode)
+        else:
+            self.assertEquals("0", snapshot.user)
+            self.assertEquals("0", snapshot.group)
+            self.assertEquals("777", snapshot.access_mode)
