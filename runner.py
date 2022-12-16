@@ -1,3 +1,4 @@
+import os
 import sys
 
 from diff_utils import compare_snapshots
@@ -50,7 +51,7 @@ def run_initialize_mode(monitored_dir: str, report_file: str, verification_file:
     write_system_snapshot(snapshot, verification_file)
 
     ended = millis()
-    report = create_init_report(monitored_dir, verification_file, ended - started, snapshot)
+    report = create_init_report(monitored_dir, verification_file, report_file, ended - started , snapshot)
     write_init_report(report, report_file)
 
 
@@ -65,5 +66,5 @@ def run_verification_mode(monitored_dir: str, report_file: str, verification_fil
     diffs = compare_snapshots(previous, current)
 
     ended = millis()
-    report = create_verification_report(monitored_dir, verification_file, ended - started, current, diffs)
+    report = create_verification_report(monitored_dir, verification_file, report_file, ended - started, current, diffs)
     write_verification_report(report, report_file)

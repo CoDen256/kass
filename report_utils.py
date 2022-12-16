@@ -67,9 +67,16 @@ def write_init_report(report: InitializationReport, report_file: str):
 
 def format_diff(diff: SnapshotDiff) -> str:
     action = {"add": "ADDED", "modify": "MODIFIED", "delete": "DELETED"}
+    prop = {'size': 'File Size',
+            'access': 'Access Mode',
+            'object': '',
+            'hash': 'Message Digest',
+            'user': 'User',
+            'group': 'Group',
+            'modified': 'Last modified time'}
     type = {"f": "F", "d": "D"}
     additional = "" if diff.action != "modify" else \
-        f": {diff.property} WAS: {diff.old_value} | NOW: {diff.new_value}"
+        f" ({prop[diff.property]}): {diff.old_value} -> {diff.new_value}"
     return f"({type[diff.type]}) {diff.path} {action[diff.action]}{additional}"
 
 

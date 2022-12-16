@@ -34,9 +34,9 @@ def main():
     if args.init:
         if args.hash_function is None:
             parser.error("The following arguments are required for Initialization mode: -H")
-        run_initialize_mode(monitored_dir, verification_file, report_file, args.hash_function)
+        run_initialize_mode(monitored_dir, report_file, verification_file, args.hash_function)
     if args.verify:
-        run_verification_mode(monitored_dir, verification_file, report_file)
+        run_verification_mode(monitored_dir, report_file, verification_file )
 
 
 if __name__ == '__main__':
