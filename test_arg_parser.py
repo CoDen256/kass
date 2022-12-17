@@ -1,5 +1,5 @@
 from unittest import TestCase
-from main import arg_parser
+from siv import arg_parser
 
 class Test(TestCase):
     def test_arg_parser_init(self):
