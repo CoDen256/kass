@@ -1,9 +1,12 @@
 #!/usr/bin/env python3.10
 import argparse
 
+import logging as log
 from model import HASH_FUNCTIONS
 from os_utils import resolve
 from runner import run_initialize_mode, run_verification_mode
+
+log.basicConfig(level=log.DEBUG, format='%(message)s')  # log.DEBUG to see all checks
 
 
 def arg_parser():
@@ -36,7 +39,7 @@ def main():
             parser.error("The following arguments are required for Initialization mode: -H")
         run_initialize_mode(monitored_dir, report_file, verification_file, args.hash_function)
     if args.verify:
-        run_verification_mode(monitored_dir, report_file, verification_file )
+        run_verification_mode(monitored_dir, report_file, verification_file)
 
 
 if __name__ == '__main__':

@@ -1,14 +1,14 @@
-
-import os
 import sys
+import time
+import logging as log
 
 from diff_utils import compare_snapshots
 from model import HashFunction
-from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
 from os_utils import is_dir, exists, is_parent_of_file
+from report_utils import write_verification_report, write_init_report, create_verification_report, create_init_report
 from snapshot_generation import create_system_snapshot
 from snapshot_serialization import load_system_snapshot, write_system_snapshot
-import time
+
 
 
 def error(message):
@@ -44,7 +44,7 @@ def millis() -> int:
 
 
 def run_initialize_mode(monitored_dir: str, report_file: str, verification_file: str, hash_function: HashFunction):
-    print(f"Running init {monitored_dir} {report_file} {verification_file} {hash_function}")
+    log.info(f"Running init {monitored_dir} {report_file} {verification_file} {hash_function}")
     started = millis()
     verify_initialize_mode(monitored_dir, report_file, verification_file, hash_function)
 
@@ -57,7 +57,7 @@ def run_initialize_mode(monitored_dir: str, report_file: str, verification_file:
 
 
 def run_verification_mode(monitored_dir: str, report_file: str, verification_file: str):
-    print(f"Running verify {monitored_dir} {report_file} {verification_file}")
+    log.info(f"Running verify {monitored_dir} {report_file} {verification_file}")
     started = millis()
     verify_verification_mode(monitored_dir, report_file, verification_file)
 

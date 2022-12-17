@@ -1,11 +1,12 @@
 import os
-
+import logging as log
 from model import SystemSnapshot, FileSnapshot, DirSnapshot, HashFunction
 from os_utils import walktree, md5, sha1, get_user, get_group, get_modified, get_access_mode
 
 
 # CREATE #
 def create_file_snapshot(file_path: str, stat_result: os.stat_result, function: HashFunction) -> FileSnapshot:
+    log.debug(f"Checking file...{file_path}")
     compute_hash = {"sha1": sha1, "md5": md5}[function]
     return FileSnapshot(
         full_path=file_path,
@@ -19,6 +20,7 @@ def create_file_snapshot(file_path: str, stat_result: os.stat_result, function: 
 
 
 def create_dir_snapshot(dir_path: str, stat_result) -> DirSnapshot:
+    log.debug(f"Checking directory...{dir_path}")
     return DirSnapshot(
         full_path=dir_path,
         user=get_user(stat_result),
